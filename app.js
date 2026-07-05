@@ -9,8 +9,9 @@ function render(){
   const list=visible(); grid.innerHTML='';
   list.slice(0,limit).forEach(a=>{
     const card=document.createElement('article'); card.className='card';
-    card.innerHTML=`<div class="card-media"><video muted loop playsinline preload="none" src="${a.src}"></video></div><div class="card-body"><b>${label(a)}</b><span>${a.cartoon?'卡通':'真人'}</span></div>`;
+    card.innerHTML=`<div class="card-media"><video muted loop playsinline preload="metadata" src="${a.src}"></video></div><div class="card-body"><b>${label(a)}</b><span>${a.cartoon?'卡通':'真人'}</span></div>`;
     const vid=card.querySelector('video');
+    vid.addEventListener('loadedmetadata',()=>{vid.currentTime=.05},{once:true});
     card.addEventListener('mouseenter',()=>vid.play().catch(()=>{})); card.addEventListener('mouseleave',()=>{vid.pause();vid.currentTime=0});
     card.addEventListener('click',()=>openPreview(a)); grid.append(card);
   });
@@ -48,16 +49,15 @@ function compositor(video,canvas,getScene){
 const hv=document.querySelector('#heroVideo'),hc=document.querySelector('#heroCanvas');let stopHero;
 hv.addEventListener('loadeddata',()=>{hv.play().catch(()=>{});stopHero?.();stopHero=compositor(hv,hc,()=>'office')});
 
-const dialog=document.querySelector('#preview'),pv=document.querySelector('#previewVideo'),pc=document.querySelector('#previewCanvas');let scene='office',stopPreview;
+const dialog=document.querySelector('#preview'),pv=document.querySelector('#previewVideo');
 function openPreview(a){
   document.querySelector('#previewTitle').textContent=label(a);pv.src=a.src;dialog.showModal();
-  pv.onloadeddata=()=>{pv.play().catch(()=>{});stopPreview?.();stopPreview=compositor(pv,pc,()=>scene)}
+  pv.onloadeddata=()=>pv.play().catch(()=>{});
 }
 document.querySelector('.close').onclick=()=>dialog.close();
-dialog.addEventListener('close',()=>{pv.pause();stopPreview?.()});
+dialog.addEventListener('close',()=>{pv.pause();pv.removeAttribute('src');pv.load()});
 dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
-document.querySelectorAll('.scene').forEach(b=>b.onclick=()=>{document.querySelector('.scene.active').classList.remove('active');b.classList.add('active');scene=b.dataset.scene});
-document.querySelector('#playDemo').onclick=()=>openPreview(female.find(a=>a.n===20));
+document.querySelector('#playDemo')?.addEventListener('click',()=>openPreview(female.find(a=>a.n===20)));
 document.querySelector('.inquire').onclick=()=>{dialog.close();document.querySelector('#contact').scrollIntoView({behavior:'smooth'})};
 render();
 document.addEventListener('contextmenu',e=>e.preventDefault());
