@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="75款高清数字人形象，支持企业宣传、课程讲解、直播与短视频。">
+  <title>灵境数字人｜形象展示库</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="#"><i>灵</i><span>灵境数字人<small>DIGITAL HUMAN STUDIO</small></span></a>
+    <nav><a href="#gallery">形象库</a><a href="#service">服务流程</a><a class="nav-cta" href="#contact">咨询定制</a></nav>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="aurora a1"></div><div class="aurora a2"></div>
+      <div class="hero-copy">
+        <p class="eyebrow"><span></span> DIGITAL HUMAN COLLECTION 2026</p>
+        <h1>找到最适合<br>品牌的<span>数字面孔</span></h1>
+        <p class="intro">75 款高清绿幕数字人，覆盖商务、教育、直播与短视频场景。选择形象，即刻开启内容表达。</p>
+        <div class="hero-actions"><a class="primary" href="#gallery">浏览全部形象 <b>↗</b></a><button class="ghost" id="playDemo">▶&nbsp; 查看场景演示</button></div>
+        <div class="facts"><div><strong>75</strong><span>精选形象</span></div><div><strong>4K</strong><span>高清画质</span></div><div><strong>24h</strong><span>快速交付</span></div></div>
+      </div>
+      <div class="hero-stage"><div class="stage-label"><span>●</span> 实时预览</div><canvas id="heroCanvas" aria-label="数字人场景预览"></canvas><video id="heroVideo" muted loop playsinline crossorigin="anonymous"></video><div class="stage-caption"><b>商务讲解 · 20号</b><span>带水印客户预览</span></div></div>
+    </section>
+    <section class="gallery" id="gallery">
+      <div class="section-head"><div><p class="eyebrow"><span></span> OUR AVATARS</p><h2>数字人形象库</h2></div><p>点击任意形象，体验不同场景下的合成效果</p></div>
+      <div class="toolbar"><div class="filters" role="group" aria-label="筛选形象"><button class="active" data-filter="all">全部 <em>75</em></button><button data-filter="female">女性 <em>42</em></button><button data-filter="male">男性 <em>33</em></button><button data-filter="cartoon">卡通 <em>14</em></button></div><label class="search"><span>⌕</span><input id="search" placeholder="搜索形象编号…" inputmode="numeric"></label></div>
+      <div class="grid" id="avatarGrid"></div><button class="load-more" id="loadMore">展示更多形象 <span>↓</span></button>
+    </section>
+    <section class="service" id="service"><p class="eyebrow"><span></span> SIMPLE WORKFLOW</p><h2>三步生成你的数字人视频</h2><div class="steps"><article><i>01</i><b>选择形象</b><p>从形象库中挑选契合品牌气质的数字人</p></article><article><i>02</i><b>提交文案</b><p>提供口播文案及希望呈现的画面风格</p></article><article><i>03</i><b>交付成片</b><p>快速合成、审核修改，高清成片即刻使用</p></article></div></section>
+    <section class="contact" id="contact"><p>让每一段表达，都拥有鲜活的面孔</p><h2>准备好开始了吗？</h2><a href="#">获取专属方案 ↗</a></section>
+  </main>
+  <footer><span>© 2026 灵境数字人工作室</span><span>专业 · 高效 · 可信赖</span></footer>
+  <dialog id="preview"><button class="close" aria-label="关闭">×</button><div class="preview-stage"><canvas id="previewCanvas"></canvas><video id="previewVideo" muted loop playsinline crossorigin="anonymous"></video><span class="preview-badge">客户预览 · 禁止商用</span></div><div class="preview-info"><p class="eyebrow"><span></span> LIVE PREVIEW</p><h2 id="previewTitle">女性数字人 20号</h2><p>正式素材将在防下载处理后接入</p><div class="scenes"><button class="scene active" data-scene="office"><i></i>未来展厅</button><button class="scene" data-scene="studio"><i></i>温暖演播室</button><button class="scene" data-scene="blue"><i></i>品牌蓝</button></div><button class="primary inquire">咨询这个形象 ↗</button></div></dialog>
+  <script src="app.js"></script>
+</body>
+</html>
