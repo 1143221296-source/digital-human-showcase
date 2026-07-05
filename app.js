@@ -1,13 +1,64 @@
-const female=Array.from({length:42},(_,i)=>({n:i+2,gender:'female',cartoon:i+2>=35}));
-const male=Array.from({length:35},(_,i)=>i+1).filter(n=>![5,23].includes(n)).map(n=>({n,gender:'male',cartoon:n>=31}));
-const avatars=[...female,...male];let filter='all',limit=12,query='';
-const grid=document.querySelector('#avatarGrid'),more=document.querySelector('#loadMore');
-const label=a=>`${a.gender==='female'?'女性':'男性'}数字人 ${a.n}号`;
+const female = Array.from({length: 42}, (_, i) => i + 2).map(n => ({n, gender:'female', cartoon:n>=35, src:`女视频/女${n}${n>=35?'卡通':''}.mp4`}));
+const male = Array.from({length:35},(_,i)=>i+1).filter(n=>![5,23].includes(n)).map(n => ({n, gender:'male', cartoon:n>=31, src:`男视频/男${n}${n>=31?'卡通':''}.mp4`}));
+const avatars=[...female,...male]; let filter='all', limit=12, query='';
+const grid=document.querySelector('#avatarGrid'), more=document.querySelector('#loadMore');
+
+function label(a){return `${a.gender==='female'?'女性':'男性'}数字人 ${a.n}号`}
 function visible(){return avatars.filter(a=>(filter==='all'||a.gender===filter||(filter==='cartoon'&&a.cartoon))&&(!query||String(a.n).includes(query)))}
-function render(){const list=visible();grid.innerHTML='';list.slice(0,limit).forEach(a=>{const card=document.createElement('article');card.className='card';card.innerHTML=`<div class="card-media"></div><div class="card-body"><b>${label(a)}</b><span>${a.cartoon?'卡通':'真人'}</span></div>`;card.onclick=()=>openPreview(a);grid.append(card)});more.hidden=list.length<=limit}
-document.querySelectorAll('.filters button').forEach(btn=>btn.onclick=()=>{document.querySelector('.filters .active').classList.remove('active');btn.classList.add('active');filter=btn.dataset.filter;limit=12;render()});
-document.querySelector('#search').oninput=e=>{query=e.target.value.trim();limit=12;render()};more.onclick=()=>{limit+=12;render()};
-const dialog=document.querySelector('#preview'),canvas=document.querySelector('#previewCanvas'),ctx=canvas.getContext('2d');
-function paint(){canvas.width=720;canvas.height=900;const g=ctx.createRadialGradient(480,220,10,360,420,700);g.addColorStop(0,'#57a7bb');g.addColorStop(.5,'#263d70');g.addColorStop(1,'#0f1930');ctx.fillStyle=g;ctx.fillRect(0,0,720,900);ctx.fillStyle='#ffffff22';ctx.textAlign='center';ctx.font='800 34px Microsoft YaHei';for(let y=120;y<900;y+=180)ctx.fillText('灵境数字人 · 客户预览',360,y);ctx.fillStyle='#fff';ctx.font='700 26px Microsoft YaHei';ctx.fillText('视频素材将在防下载处理后接入',360,450)}
-function openPreview(a){document.querySelector('#previewTitle').textContent=label(a);paint();dialog.showModal()}
-document.querySelector('.close').onclick=()=>dialog.close();dialog.onclick=e=>{if(e.target===dialog)dialog.close()};document.querySelector('#playDemo').onclick=()=>openPreview(female[18]);document.querySelector('.inquire').onclick=()=>dialog.close();document.addEventListener('contextmenu',e=>e.preventDefault());render();
+function render(){
+  const list=visible(); grid.innerHTML='';
+  list.slice(0,limit).forEach(a=>{
+    const card=document.createElement('article'); card.className='card';
+    card.innerHTML=`<div class="card-media"><video muted loop playsinline preload="none" src="${a.src}"></video></div><div class="card-body"><b>${label(a)}</b><span>${a.cartoon?'卡通':'真人'}</span></div>`;
+    const vid=card.querySelector('video');
+    card.addEventListener('mouseenter',()=>vid.play().catch(()=>{})); card.addEventListener('mouseleave',()=>{vid.pause();vid.currentTime=0});
+    card.addEventListener('click',()=>openPreview(a)); grid.append(card);
+  });
+  more.hidden=list.length<=limit;
+}
+document.querySelectorAll('.filters button').forEach(btn=>btn.onclick=()=>{
+  document.querySelector('.filters .active').classList.remove('active');btn.classList.add('active');filter=btn.dataset.filter;limit=12;render();
+});
+document.querySelector('#search').oninput=e=>{query=e.target.value.trim();limit=12;render()};
+more.onclick=()=>{limit+=12;render()};
+
+const backgrounds={
+  office:['#0f1930','#263d70','#57a7bb'],
+  studio:['#25170f','#75452d','#d69b5c'],
+  blue:['#101c59','#2449c7','#628cff']
+};
+function compositor(video,canvas,getScene){
+  const ctx=canvas.getContext('2d',{willReadFrequently:true}),off=document.createElement('canvas'),ox=off.getContext('2d',{willReadFrequently:true}); let raf;
+  function draw(){
+    const w=video.videoWidth||720,h=video.videoHeight||900;if(canvas.width!==w){canvas.width=w;canvas.height=h;off.width=w;off.height=h}
+    const g=ctx.createRadialGradient(w*.65,h*.25,10,w*.5,h*.45,w*.8), colors=backgrounds[getScene()];
+    g.addColorStop(0,colors[2]);g.addColorStop(.45,colors[1]);g.addColorStop(1,colors[0]);ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+    ctx.save();ctx.globalAlpha=.23;ctx.strokeStyle='#fff';for(let x=-h;x<w+h;x+=110){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x-h,h);ctx.stroke()}ctx.restore();
+    if(video.readyState>=2){
+      ox.drawImage(video,0,0,w,h);
+      const image=ox.getImageData(0,0,w,h),d=image.data;
+      for(let i=0;i<d.length;i+=4){const r=d[i],g=d[i+1],b=d[i+2];const green=g-Math.max(r,b);if(g>65&&green>15)d[i+3]=Math.max(0,255-(green-15)*5)}
+      ctx.drawImage(off,0,0);
+    }
+    ctx.save();ctx.translate(w/2,h/2);ctx.rotate(-Math.PI/10);ctx.textAlign='center';ctx.font=`800 ${Math.max(18,w/28)}px Microsoft YaHei`;ctx.fillStyle='rgba(255,255,255,.22)';ctx.strokeStyle='rgba(0,0,0,.12)';ctx.lineWidth=2;
+    for(let y=-h;y<=h;y+=h/3.7){for(let x=-w;x<=w;x+=w*.72){ctx.strokeText('天宇设计 · 客户预览',x,y);ctx.fillText('天宇设计 · 客户预览',x,y)}}ctx.restore();
+    raf=requestAnimationFrame(draw);
+  } draw(); return ()=>cancelAnimationFrame(raf);
+}
+const hv=document.querySelector('#heroVideo'),hc=document.querySelector('#heroCanvas');let stopHero;
+hv.addEventListener('loadeddata',()=>{hv.play().catch(()=>{});stopHero?.();stopHero=compositor(hv,hc,()=>'office')});
+
+const dialog=document.querySelector('#preview'),pv=document.querySelector('#previewVideo'),pc=document.querySelector('#previewCanvas');let scene='office',stopPreview;
+function openPreview(a){
+  document.querySelector('#previewTitle').textContent=label(a);pv.src=a.src;dialog.showModal();
+  pv.onloadeddata=()=>{pv.play().catch(()=>{});stopPreview?.();stopPreview=compositor(pv,pc,()=>scene)}
+}
+document.querySelector('.close').onclick=()=>dialog.close();
+dialog.addEventListener('close',()=>{pv.pause();stopPreview?.()});
+dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
+document.querySelectorAll('.scene').forEach(b=>b.onclick=()=>{document.querySelector('.scene.active').classList.remove('active');b.classList.add('active');scene=b.dataset.scene});
+document.querySelector('#playDemo').onclick=()=>openPreview(female.find(a=>a.n===20));
+document.querySelector('.inquire').onclick=()=>{dialog.close();document.querySelector('#contact').scrollIntoView({behavior:'smooth'})};
+render();
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('dragstart',e=>e.preventDefault());
