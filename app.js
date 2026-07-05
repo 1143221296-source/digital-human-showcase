@@ -13,7 +13,7 @@ function render(){
     const vid=card.querySelector('video');
     vid.addEventListener('loadedmetadata',()=>{vid.currentTime=.05},{once:true});
     card.addEventListener('mouseenter',()=>vid.play().catch(()=>{})); card.addEventListener('mouseleave',()=>{vid.pause();vid.currentTime=0});
-    card.addEventListener('click',()=>openPreview(a)); grid.append(card);
+    grid.append(card);
   });
   more.hidden=list.length<=limit;
 }
@@ -57,7 +57,6 @@ function openPreview(a){
 document.querySelector('.close').onclick=()=>dialog.close();
 dialog.addEventListener('close',()=>{pv.pause();pv.removeAttribute('src');pv.load()});
 dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
-document.querySelector('#playDemo')?.addEventListener('click',()=>openPreview(female.find(a=>a.n===20)));
 document.querySelector('.inquire').onclick=()=>{dialog.close();document.querySelector('#contact').scrollIntoView({behavior:'smooth'})};
 render();
 document.addEventListener('contextmenu',e=>e.preventDefault());
