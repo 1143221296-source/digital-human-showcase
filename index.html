@@ -1,57 +1,45 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="天宇设计提供PPT制作、数字人讲PPT、教育课件、AI视频、CAD绘图、建筑结构设计与施工方案服务。">
-  <title>天宇设计｜AI数字内容与工程设计</title>
-  <link rel="stylesheet" href="styles.css?v=20260705-5">
+  <title>天宇设计｜普通背景图库、标准背景图库、数字人形象库、声音库</title>
+  <link rel="stylesheet" href="styles.css?v=20260709-1">
 </head>
 <body>
   <header class="nav">
-    <a class="brand" href="#"><img src="assets/tianyu-logo.jpg" alt="天宇设计" width="42" height="42" style="width:42px;height:42px;object-fit:cover;border-radius:12px"><span>天宇设计<small>TIANYU DESIGN · AI STUDIO</small></span></a>
-    <nav><a href="#service">服务项目</a><a href="#gallery">数字人库</a><a href="#resources">素材库</a><a href="#workflow">制作流程</a><a class="nav-cta" href="#contact">咨询定制</a></nav>
+    <a class="brand" href="#"><img src="assets/tianyu-logo.jpg" alt="天宇设计" width="42" height="42"><span>天宇设计<small>TIANYU DESIGN · AI STUDIO</small></span></a>
+    <nav>
+      <a href="#normal-backgrounds">普通背景图库</a>
+      <a href="#standard-backgrounds">标准背景图库</a>
+      <a href="#gallery">数字人形象库</a>
+      <a href="#voices">声音库</a>
+      <a class="nav-cta" href="#contact">咨询定制</a>
+    </nav>
   </header>
 
   <main>
-    <section class="hero">
-      <div class="aurora a1"></div><div class="aurora a2"></div>
-      <div class="hero-copy">
-        <p class="eyebrow"><span></span> DIGITAL HUMAN COLLECTION 2026</p>
-        <h1>设计与 AI 融合<br>让创意<span>高效落地</span></h1>
-        <p class="intro">从 PPT、教育课件到数字人讲解，从 CAD 绘图、建筑结构到施工方案，天宇设计为您提供一站式数字内容与工程设计服务。</p>
-        <div class="hero-actions">
-          <a class="primary" href="#service">查看服务项目 <b>↗</b></a>
-          <button class="ghost" id="playDemo">▶&nbsp; 体验数字人</button>
-        </div>
-        <div class="facts"><div><strong>9+</strong><span>专业服务</span></div><div><strong>75</strong><span>数字人形象</span></div><div><strong>AI</strong><span>高效赋能</span></div></div>
+    <section class="library-section" id="normal-backgrounds">
+      <div class="section-head">
+        <div><p class="eyebrow"><span></span> NORMAL BACKGROUNDS</p><h2>普通背景图库</h2></div>
+        <p>背景1-背景10，适合简洁商务、课件和通用数字人视频。</p>
       </div>
-      <div class="hero-stage">
-        <div class="stage-label"><span>●</span> 实时预览</div>
-        <canvas id="heroCanvas" aria-label="数字人场景预览"></canvas>
-        <video id="heroVideo" muted loop playsinline crossorigin="anonymous"></video>
-        <div class="stage-caption"><b>天宇设计 · 数字人讲 PPT</b><span>带水印客户预览</span></div>
-      </div>
+      <div class="asset-grid background-grid" id="normalBackgroundGrid"></div>
     </section>
 
-    <section class="service" id="service">
-      <p class="eyebrow"><span></span> PROFESSIONAL SERVICES</p><h2>我们能为您做什么</h2>
-      <div class="service-grid">
-        <article><i>▣</i><b>PPT 制作</b><p>商务汇报、路演方案与高端演示设计</p></article>
-        <article><i>◉</i><b>数字人讲 PPT</b><p>数字人出镜、配音与课件一体化合成</p></article>
-        <article><i>◇</i><b>教育课件</b><p>教学内容可视化与精品课程包装</p></article>
-        <article><i>AI</i><b>AI 赋能</b><p>以人工智能提升内容生产效率</p></article>
-        <article><i>▶</i><b>AI 视频</b><p>宣传片、讲解视频与短视频制作</p></article>
-        <article><i>⌁</i><b>CAD 绘图</b><p>专业、规范的工程图纸绘制</p></article>
-        <article><i>△</i><b>建筑结构设计</b><p>可靠严谨的建筑结构设计服务</p></article>
-        <article><i>☷</i><b>施工方案</b><p>专业施工组织与专项方案编制</p></article>
+    <section class="library-section alt" id="standard-backgrounds">
+      <div class="section-head">
+        <div><p class="eyebrow"><span></span> STANDARD BACKGROUNDS</p><h2>标准背景图库</h2></div>
+        <p>背景11-背景53，覆盖发布厅、培训厅、党建、医疗、科技等场景。</p>
       </div>
+      <div class="asset-grid background-grid" id="standardBackgroundGrid"></div>
     </section>
 
     <section class="gallery" id="gallery">
       <div class="section-head">
         <div><p class="eyebrow"><span></span> OUR AVATARS</p><h2>数字人形象库</h2></div>
-      <p>点击任意形象，放大查看绿幕数字人原片</p>
+        <p>点击任意形象，放大查看绿幕数字人原片。</p>
       </div>
       <div class="toolbar">
         <div class="filters" role="group" aria-label="筛选形象">
@@ -66,16 +54,19 @@
       <button class="load-more" id="loadMore">展示更多形象 <span>↓</span></button>
     </section>
 
-    <section class="resources" id="resources">
-      <div><p class="eyebrow"><span></span> RESOURCE LIBRARY</p><h2>丰富素材，自由组合</h2><p>背景库与声音库即将持续更新，让每一支数字人视频都更贴合您的内容和品牌。</p></div>
-      <div class="resource-cards"><article><b>PPT 背景库</b><span>商务 · 教育 · 科技 · 建筑</span><em>即将上线 →</em></article><article><b>声音库</b><span>男女声 · 多风格 · 多语种</span><em>即将上线 →</em></article></div>
+    <section class="library-section alt" id="voices">
+      <div class="section-head">
+        <div><p class="eyebrow"><span></span> VOICE LIBRARY</p><h2>声音库</h2></div>
+        <p>男声音、女声音、小男孩声音、小女孩声音已按序号重命名，可直接试听。</p>
+      </div>
+      <div class="voice-groups" id="voiceGroups"></div>
     </section>
 
     <section class="workflow" id="workflow">
       <p class="eyebrow"><span></span> PRODUCTION WORKFLOW</p><h2>数字人讲 PPT 制作流程</h2>
       <div class="steps">
         <article><i>01</i><b>提供资料</b><p>客户提供 PPT 文件与完整讲稿</p></article>
-        <article><i>02</i><b>选择背景</b><p>从背景库选择合适的 PPT 视觉风格</p></article>
+        <article><i>02</i><b>选择背景</b><p>从普通或标准背景图库选择合适风格</p></article>
         <article><i>03</i><b>选择数字人</b><p>挑选符合内容气质的数字人形象</p></article>
         <article><i>04</i><b>选择声音</b><p>选择性别、音色与讲解风格</p></article>
         <article><i>05</i><b>合成交付</b><p>制作、审核并交付高清成片</p></article>
@@ -98,6 +89,6 @@
       <button class="primary inquire">咨询这个形象 ↗</button>
     </div>
   </dialog>
-  <script src="app.js?v=20260705-5"></script>
+  <script src="app.js?v=20260709-1"></script>
 </body>
 </html>
