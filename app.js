@@ -12,9 +12,9 @@ function renderBackgrounds(targetId, numbers, tag) {
   if (!target) return;
   target.innerHTML = numbers.map(n => `
     <article class="asset-card">
-      <a class="background-thumb" href="assets/backgrounds/背景${n}.jpg" target="_blank" rel="noopener">
-        <img src="assets/backgrounds/背景${n}.jpg" alt="背景${n}" loading="lazy">
-      </a>
+      <div class="background-thumb">
+        <img src="assets/backgrounds/背景${n}.jpg" alt="背景${n}" loading="lazy" draggable="false">
+      </div>
       <div class="asset-body"><b>背景${n}</b><span>${tag}</span></div>
     </article>
   `).join('');
@@ -30,7 +30,7 @@ function renderVoices() {
         ${Array.from({length: group.count}, (_, i) => {
           const n = i + 1;
           const name = `${group.prefix}${n}`;
-          return `<article class="voice-item"><b>${name}</b><audio controls preload="none" src="assets/voices/${name}.wav"></audio></article>`;
+          return `<article class="voice-item"><b>${name}</b><button class="voice-play" type="button" data-src="assets/voices/${name}.wav" aria-label="播放${name}"><span>▶</span>试听</button></article>`;
         }).join('')}
       </div>
     </section>
@@ -88,5 +88,42 @@ renderBackgrounds('#normalBackgroundGrid', normalBackgrounds, '普通背景');
 renderBackgrounds('#standardBackgroundGrid', standardBackgrounds, '标准背景');
 renderVoices();
 render();
+
+let activeAudio = null;
+let activeButton = null;
+document.addEventListener('click', e => {
+  const button = e.target.closest('.voice-play');
+  if (!button) return;
+  if (activeAudio && activeButton === button && !activeAudio.paused) {
+    activeAudio.pause();
+    button.classList.remove('playing');
+    button.querySelector('span').textContent = '▶';
+    return;
+  }
+  if (activeAudio) {
+    activeAudio.pause();
+    activeAudio.currentTime = 0;
+  }
+  if (activeButton) {
+    activeButton.classList.remove('playing');
+    activeButton.querySelector('span').textContent = '▶';
+  }
+  activeButton = button;
+  activeAudio = new Audio(button.dataset.src);
+  activeAudio.preload = 'auto';
+  activeAudio.addEventListener('ended', () => {
+    button.classList.remove('playing');
+    button.querySelector('span').textContent = '▶';
+  }, {once: true});
+  button.classList.add('playing');
+  button.querySelector('span').textContent = '❚❚';
+  activeAudio.play().catch(() => {
+    button.classList.remove('playing');
+    button.querySelector('span').textContent = '▶';
+  });
+});
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('dragstart', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && ['s', 'u'].includes(e.key.toLowerCase())) e.preventDefault();
+});
