@@ -94,8 +94,10 @@ function render() {
     `;
     const media = card.querySelector('.card-media');
     let video = null;
+    let hovering = false;
     const playPreview = () => {
       if (!media) return;
+      hovering = true;
       if (!video) {
         video = document.createElement('video');
         video.className = 'avatar-video';
@@ -105,13 +107,19 @@ function render() {
         video.preload = 'none';
         video.dataset.src = a.video;
         video.addEventListener('contextmenu', e => e.preventDefault());
+        video.addEventListener('canplay', () => {
+          if (hovering) card.classList.add('is-playing');
+        });
+        video.addEventListener('playing', () => {
+          if (hovering) card.classList.add('is-playing');
+        });
         media.append(video);
       }
       if (!video.src) video.src = video.dataset.src || '';
-      card.classList.add('is-playing');
       video.play().catch(() => card.classList.remove('is-playing'));
     };
     const stopPreview = () => {
+      hovering = false;
       if (!video) return;
       video.pause();
       video.currentTime = 0;

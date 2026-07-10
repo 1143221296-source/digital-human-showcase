@@ -28,3 +28,10 @@
 .avatar-video{opacity:0;pointer-events:none;background:#06110c;transition:opacity .16s ease}
 .card.is-playing .avatar-video{opacity:1}
 .image-dialog-stage img{cursor:zoom-out}
+
+/* 20260710-5: unified orange-yellow hover border and smoother poster-to-video transition */
+.asset-card:hover,.asset-card.is-clickable:hover,.card:hover{border-color:#ffb21a;box-shadow:0 0 0 4px rgba(255,178,26,.42),0 18px 42px rgba(0,0,0,.55)}
+.avatar-poster{opacity:1;transition:opacity .28s ease}
+.avatar-video{opacity:0;background:transparent;transition:opacity .28s ease}
+.card.is-playing .avatar-poster{opacity:.08}
+.card.is-playing .avatar-video{opacity:1}
