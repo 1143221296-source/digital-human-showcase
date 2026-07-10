@@ -21,3 +21,10 @@
 .image-dialog-info{padding:0 24px 24px}
 .image-dialog-info h2{margin:8px 0 0;font-size:24px}
 @media(max-width:900px){.brand span{font-size:21px}.brand small{max-width:90vw}.image-dialog-stage{min-height:42vh}}
+
+/* 20260710-4: avatar hover video preview and click-to-close background preview */
+.card-media{position:relative}
+.avatar-poster,.avatar-video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;user-select:none;-webkit-user-drag:none}
+.avatar-video{opacity:0;pointer-events:none;background:#06110c;transition:opacity .16s ease}
+.card.is-playing .avatar-video{opacity:1}
+.image-dialog-stage img{cursor:zoom-out}

@@ -51,13 +51,15 @@ const female = Array.from({ length: 42 }, (_, i) => i + 2).map(n => ({
   n,
   gender: 'female',
   cartoon: n >= 35,
-  poster: mediaUrl(`assets/posters/female${n}${n >= 35 ? '-cartoon' : ''}.jpg`)
+  poster: mediaUrl(`assets/posters/female${n}${n >= 35 ? '-cartoon' : ''}.jpg`),
+  video: mediaUrl(`videos/female/female${n}${n >= 35 ? '-cartoon' : ''}.mp4`)
 }));
 const male = Array.from({ length: 35 }, (_, i) => i + 1).filter(n => ![5, 23].includes(n)).map(n => ({
   n,
   gender: 'male',
   cartoon: n >= 31,
-  poster: mediaUrl(`assets/posters/male${n}${n >= 31 ? '-cartoon' : ''}.jpg`)
+  poster: mediaUrl(`assets/posters/male${n}${n >= 31 ? '-cartoon' : ''}.jpg`),
+  video: mediaUrl(`videos/male/male${n}${n >= 31 ? '-cartoon' : ''}.mp4`)
 }));
 const avatars = [...female, ...male];
 let filter = 'all';
@@ -86,10 +88,37 @@ function render() {
     card.className = 'card';
     card.innerHTML = `
       <div class="card-media">
-        <img src="${a.poster}" alt="${label(a)}" loading="lazy" draggable="false">
+        <img class="avatar-poster" src="${a.poster}" alt="${label(a)}" loading="lazy" draggable="false">
       </div>
       <div class="card-body"><b>${label(a)}</b><span>${a.cartoon ? '卡通' : '真人'}</span></div>
     `;
+    const media = card.querySelector('.card-media');
+    let video = null;
+    const playPreview = () => {
+      if (!media) return;
+      if (!video) {
+        video = document.createElement('video');
+        video.className = 'avatar-video';
+        video.muted = true;
+        video.loop = true;
+        video.playsInline = true;
+        video.preload = 'none';
+        video.dataset.src = a.video;
+        video.addEventListener('contextmenu', e => e.preventDefault());
+        media.append(video);
+      }
+      if (!video.src) video.src = video.dataset.src || '';
+      card.classList.add('is-playing');
+      video.play().catch(() => card.classList.remove('is-playing'));
+    };
+    const stopPreview = () => {
+      if (!video) return;
+      video.pause();
+      video.currentTime = 0;
+      card.classList.remove('is-playing');
+    };
+    card.addEventListener('mouseenter', playPreview);
+    card.addEventListener('mouseleave', stopPreview);
     grid.append(card);
   });
   more.hidden = list.length <= limit;
@@ -137,7 +166,7 @@ document.querySelectorAll('[data-close-dialog]').forEach(btn => {
 
 if (imageDialog) {
   imageDialog.addEventListener('click', e => {
-    if (e.target === imageDialog) imageDialog.close();
+    if (e.target === imageDialog || e.target === imagePreviewImg) imageDialog.close();
   });
   imageDialog.addEventListener('close', () => {
     if (imagePreviewImg) imagePreviewImg.removeAttribute('src');
