@@ -51,12 +51,15 @@ function render() {
   list.slice(0, limit).forEach(a => {
     const card = document.createElement('article');
     card.className = 'card';
-    card.innerHTML = `<div class="card-media"><video muted loop playsinline preload="metadata" src="${a.src}"></video></div><div class="card-body"><b>${label(a)}</b><span>${a.cartoon ? '卡通' : '真人'}</span></div>`;
+    card.innerHTML = `<div class="card-media"><video muted loop playsinline preload="none" data-src="${a.src}"></video></div><div class="card-body"><b>${label(a)}</b><span>${a.cartoon ? '卡通' : '真人'}</span></div>`;
     const vid = card.querySelector('video');
+    const loadVideo = () => {
+      if (!vid.src) vid.src = vid.dataset.src;
+    };
     vid.addEventListener('loadedmetadata', () => { vid.currentTime = .05; }, {once: true});
-    card.addEventListener('mouseenter', () => vid.play().catch(() => {}));
+    card.addEventListener('mouseenter', () => { loadVideo(); vid.play().catch(() => {}); });
     card.addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
-    card.addEventListener('click', () => openPreview(a));
+    card.addEventListener('click', () => { loadVideo(); openPreview(a); });
     grid.append(card);
   });
   more.hidden = list.length <= limit;
