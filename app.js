@@ -1,24 +1,32 @@
-﻿const MEDIA_BASE = 'https://digital-human-showcase-1315864774.cos.ap-guangzhou.myqcloud.com/digital-human-showcase/';
-const normalBackgrounds = Array.from({length: 10}, (_, i) => i + 1);
-const standardBackgrounds = Array.from({length: 43}, (_, i) => i + 11);
+const MEDIA_BASE = 'https://digital-human-showcase-1315864774.cos.ap-guangzhou.myqcloud.com/digital-human-showcase/';
+
+const normalBackgrounds = Array.from({ length: 10 }, (_, i) => i + 1);
+const standardBackgrounds = Array.from({ length: 43 }, (_, i) => i + 11);
 const voiceGroups = [
-  {title: '男声音', file: 'male', count: 11},
-  {title: '女声音', file: 'female', count: 12},
-  {title: '小男孩声音', file: 'boy', count: 9},
-  {title: '小女孩声音', file: 'girl', count: 5}
+  { title: '男声音', file: 'male', count: 11 },
+  { title: '女声音', file: 'female', count: 12 },
+  { title: '小男孩声音', file: 'boy', count: 9 },
+  { title: '小女孩声音', file: 'girl', count: 5 }
 ];
 
-function renderBackgrounds(targetId, numbers, tag) {
+function mediaUrl(path) {
+  return `${MEDIA_BASE}${path}`;
+}
+
+function renderBackgrounds(targetId, numbers, tag, canPreview = false) {
   const target = document.querySelector(targetId);
   if (!target) return;
-  target.innerHTML = numbers.map(n => `
-    <article class="asset-card">
-      <div class="background-thumb">
-        <img src="${MEDIA_BASE}assets/backgrounds/bg${n}.jpg" alt="背景${n}" loading="lazy" draggable="false">
-      </div>
-      <div class="asset-body"><b>背景${n}</b><span>${tag}</span></div>
-    </article>
-  `).join('');
+  target.innerHTML = numbers.map(n => {
+    const src = mediaUrl(`assets/backgrounds/bg${n}.jpg`);
+    return `
+      <article class="asset-card ${canPreview ? 'is-clickable' : ''}">
+        <button class="background-thumb" type="button" ${canPreview ? `data-preview="${src}" data-title="背景${n}"` : 'disabled'}>
+          <img src="${src}" alt="背景${n}" loading="lazy" draggable="false">
+        </button>
+        <div class="asset-body"><b>背景${n}</b><span>${tag}</span></div>
+      </article>
+    `;
+  }).join('');
 }
 
 function renderVoices() {
@@ -28,70 +36,113 @@ function renderVoices() {
     <section class="voice-group">
       <h3>${group.title}</h3>
       <div class="voice-list">
-        ${Array.from({length: group.count}, (_, i) => {
+        ${Array.from({ length: group.count }, (_, i) => {
           const n = i + 1;
           const name = `${group.title}${n}`;
-          return `<article class="voice-item"><b>${name}</b><button class="voice-play" type="button" data-src="${MEDIA_BASE}assets/voices/${group.file}${n}.wav" aria-label="播放${name}"><span>▶</span>试听</button></article>`;
+          const src = mediaUrl(`assets/voices/${group.file}${n}.wav`);
+          return `<article class="voice-item"><b>${name}</b><button class="voice-play" type="button" data-src="${src}" aria-label="播放${name}"><span>▶</span>试听</button></article>`;
         }).join('')}
       </div>
     </section>
   `).join('');
 }
 
-const female = Array.from({length: 42}, (_, i) => i + 2).map(n => ({n, gender: 'female', cartoon: n >= 35, src: `${MEDIA_BASE}videos/female/female${n}${n >= 35 ? '-cartoon' : ''}.mp4`}));
-const male = Array.from({length: 35}, (_, i) => i + 1).filter(n => ![5, 23].includes(n)).map(n => ({n, gender: 'male', cartoon: n >= 31, src: `${MEDIA_BASE}videos/male/male${n}${n >= 31 ? '-cartoon' : ''}.mp4`}));
+const female = Array.from({ length: 42 }, (_, i) => i + 2).map(n => ({
+  n,
+  gender: 'female',
+  cartoon: n >= 35,
+  poster: mediaUrl(`assets/posters/female${n}${n >= 35 ? '-cartoon' : ''}.jpg`)
+}));
+const male = Array.from({ length: 35 }, (_, i) => i + 1).filter(n => ![5, 23].includes(n)).map(n => ({
+  n,
+  gender: 'male',
+  cartoon: n >= 31,
+  poster: mediaUrl(`assets/posters/male${n}${n >= 31 ? '-cartoon' : ''}.jpg`)
+}));
 const avatars = [...female, ...male];
-let filter = 'all', limit = 12, query = '';
-const grid = document.querySelector('#avatarGrid'), more = document.querySelector('#loadMore');
+let filter = 'all';
+let limit = 12;
+let query = '';
+const grid = document.querySelector('#avatarGrid');
+const more = document.querySelector('#loadMore');
 
-function label(a) { return `${a.gender === 'female' ? '女性' : '男性'}数字人 ${a.n}号`; }
-function visible() { return avatars.filter(a => (filter === 'all' || a.gender === filter || (filter === 'cartoon' && a.cartoon)) && (!query || String(a.n).includes(query))); }
+function label(a) {
+  return `${a.gender === 'female' ? '女性' : '男性'}数字人 ${a.n}号`;
+}
+
+function visible() {
+  return avatars.filter(a =>
+    (filter === 'all' || a.gender === filter || (filter === 'cartoon' && a.cartoon)) &&
+    (!query || String(a.n).includes(query))
+  );
+}
+
 function render() {
+  if (!grid || !more) return;
   const list = visible();
   grid.innerHTML = '';
   list.slice(0, limit).forEach(a => {
     const card = document.createElement('article');
     card.className = 'card';
-    card.innerHTML = `<div class="card-media"><video muted loop playsinline preload="none" data-src="${a.src}"></video></div><div class="card-body"><b>${label(a)}</b><span>${a.cartoon ? '卡通' : '真人'}</span></div>`;
-    const vid = card.querySelector('video');
-    const loadVideo = () => {
-      if (!vid.src) vid.src = vid.dataset.src;
-    };
-    vid.addEventListener('loadedmetadata', () => { vid.currentTime = .05; }, {once: true});
-    card.addEventListener('mouseenter', () => { loadVideo(); vid.play().catch(() => {}); });
-    card.addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
-    card.addEventListener('click', () => { loadVideo(); openPreview(a); });
+    card.innerHTML = `
+      <div class="card-media">
+        <img src="${a.poster}" alt="${label(a)}" loading="lazy" draggable="false">
+      </div>
+      <div class="card-body"><b>${label(a)}</b><span>${a.cartoon ? '卡通' : '真人'}</span></div>
+    `;
     grid.append(card);
   });
   more.hidden = list.length <= limit;
 }
 
-document.querySelectorAll('.filters button').forEach(btn => btn.onclick = () => {
-  document.querySelector('.filters .active').classList.remove('active');
-  btn.classList.add('active');
-  filter = btn.dataset.filter;
-  limit = 12;
-  render();
+document.querySelectorAll('.filters button').forEach(btn => {
+  btn.onclick = () => {
+    const active = document.querySelector('.filters .active');
+    if (active) active.classList.remove('active');
+    btn.classList.add('active');
+    filter = btn.dataset.filter || 'all';
+    limit = 12;
+    render();
+  };
 });
-document.querySelector('#search').oninput = e => { query = e.target.value.trim(); limit = 12; render(); };
-more.onclick = () => { limit += 12; render(); };
 
-const dialog = document.querySelector('#preview'), pv = document.querySelector('#previewVideo');
-function openPreview(a) {
-  document.querySelector('#previewTitle').textContent = label(a);
-  pv.src = a.src;
-  dialog.showModal();
-  pv.onloadeddata = () => pv.play().catch(() => {});
+const search = document.querySelector('#search');
+if (search) {
+  search.oninput = e => {
+    query = e.target.value.trim();
+    limit = 12;
+    render();
+  };
 }
-document.querySelector('.close').onclick = () => dialog.close();
-dialog.addEventListener('close', () => { pv.pause(); pv.removeAttribute('src'); pv.load(); });
-dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close(); });
-document.querySelector('.inquire').onclick = () => { dialog.close(); document.querySelector('#contact').scrollIntoView({behavior: 'smooth'}); };
+if (more) more.onclick = () => { limit += 12; render(); };
 
-renderBackgrounds('#normalBackgroundGrid', normalBackgrounds, '普通背景');
-renderBackgrounds('#standardBackgroundGrid', standardBackgrounds, '标准背景');
-renderVoices();
-render();
+const imageDialog = document.querySelector('#imagePreview');
+const imagePreviewImg = document.querySelector('#imagePreviewImg');
+const imagePreviewTitle = document.querySelector('#imagePreviewTitle');
+document.addEventListener('click', e => {
+  const thumb = e.target.closest('.background-thumb[data-preview]');
+  if (!thumb || !imageDialog || !imagePreviewImg || !imagePreviewTitle) return;
+  imagePreviewImg.src = thumb.dataset.preview || '';
+  imagePreviewImg.alt = thumb.dataset.title || '标准背景预览';
+  imagePreviewTitle.textContent = thumb.dataset.title || '标准背景预览';
+  imageDialog.showModal();
+});
+
+document.querySelectorAll('[data-close-dialog]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const dialog = btn.closest('dialog');
+    if (dialog) dialog.close();
+  });
+});
+
+if (imageDialog) {
+  imageDialog.addEventListener('click', e => {
+    if (e.target === imageDialog) imageDialog.close();
+  });
+  imageDialog.addEventListener('close', () => {
+    if (imagePreviewImg) imagePreviewImg.removeAttribute('src');
+  });
+}
 
 let activeAudio = null;
 let activeButton = null;
@@ -118,7 +169,7 @@ document.addEventListener('click', e => {
   activeAudio.addEventListener('ended', () => {
     button.classList.remove('playing');
     button.querySelector('span').textContent = '▶';
-  }, {once: true});
+  }, { once: true });
   button.classList.add('playing');
   button.querySelector('span').textContent = '❚❚';
   activeAudio.play().catch(() => {
@@ -126,9 +177,14 @@ document.addEventListener('click', e => {
     button.querySelector('span').textContent = '▶';
   });
 });
+
+renderBackgrounds('#normalBackgroundGrid', normalBackgrounds, '普通背景', false);
+renderBackgrounds('#standardBackgroundGrid', standardBackgrounds, '标准背景', true);
+renderVoices();
+render();
+
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('dragstart', e => e.preventDefault());
 document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && ['s', 'u'].includes(e.key.toLowerCase())) e.preventDefault();
 });
-
