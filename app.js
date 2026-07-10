@@ -1,10 +1,11 @@
-﻿const normalBackgrounds = Array.from({length: 10}, (_, i) => i + 1);
+﻿const MEDIA_BASE = 'https://digital-human-showcase-1315864774.cos.ap-guangzhou.myqcloud.com/digital-human-showcase/';
+const normalBackgrounds = Array.from({length: 10}, (_, i) => i + 1);
 const standardBackgrounds = Array.from({length: 43}, (_, i) => i + 11);
 const voiceGroups = [
-  {title: '男声音', prefix: '男声音', count: 11},
-  {title: '女声音', prefix: '女声音', count: 12},
-  {title: '小男孩声音', prefix: '小男孩声音', count: 9},
-  {title: '小女孩声音', prefix: '小女孩声音', count: 5}
+  {title: '男声音', file: 'male', count: 11},
+  {title: '女声音', file: 'female', count: 12},
+  {title: '小男孩声音', file: 'boy', count: 9},
+  {title: '小女孩声音', file: 'girl', count: 5}
 ];
 
 function renderBackgrounds(targetId, numbers, tag) {
@@ -13,7 +14,7 @@ function renderBackgrounds(targetId, numbers, tag) {
   target.innerHTML = numbers.map(n => `
     <article class="asset-card">
       <div class="background-thumb">
-        <img src="assets/backgrounds/背景${n}.jpg" alt="背景${n}" loading="lazy" draggable="false">
+        <img src="${MEDIA_BASE}assets/backgrounds/bg${n}.jpg" alt="背景${n}" loading="lazy" draggable="false">
       </div>
       <div class="asset-body"><b>背景${n}</b><span>${tag}</span></div>
     </article>
@@ -29,16 +30,16 @@ function renderVoices() {
       <div class="voice-list">
         ${Array.from({length: group.count}, (_, i) => {
           const n = i + 1;
-          const name = `${group.prefix}${n}`;
-          return `<article class="voice-item"><b>${name}</b><button class="voice-play" type="button" data-src="assets/voices/${name}.wav" aria-label="播放${name}"><span>▶</span>试听</button></article>`;
+          const name = `${group.title}${n}`;
+          return `<article class="voice-item"><b>${name}</b><button class="voice-play" type="button" data-src="${MEDIA_BASE}assets/voices/${group.file}${n}.wav" aria-label="播放${name}"><span>▶</span>试听</button></article>`;
         }).join('')}
       </div>
     </section>
   `).join('');
 }
 
-const female = Array.from({length: 42}, (_, i) => i + 2).map(n => ({n, gender: 'female', cartoon: n >= 35, src: `女视频/女${n}${n >= 35 ? '卡通' : ''}.mp4`}));
-const male = Array.from({length: 35}, (_, i) => i + 1).filter(n => ![5, 23].includes(n)).map(n => ({n, gender: 'male', cartoon: n >= 31, src: `男视频/男${n}${n >= 31 ? '卡通' : ''}.mp4`}));
+const female = Array.from({length: 42}, (_, i) => i + 2).map(n => ({n, gender: 'female', cartoon: n >= 35, src: `${MEDIA_BASE}videos/female/female${n}${n >= 35 ? '-cartoon' : ''}.mp4`}));
+const male = Array.from({length: 35}, (_, i) => i + 1).filter(n => ![5, 23].includes(n)).map(n => ({n, gender: 'male', cartoon: n >= 31, src: `${MEDIA_BASE}videos/male/male${n}${n >= 31 ? '-cartoon' : ''}.mp4`}));
 const avatars = [...female, ...male];
 let filter = 'all', limit = 12, query = '';
 const grid = document.querySelector('#avatarGrid'), more = document.querySelector('#loadMore');
@@ -130,3 +131,4 @@ document.addEventListener('dragstart', e => e.preventDefault());
 document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && ['s', 'u'].includes(e.key.toLowerCase())) e.preventDefault();
 });
+
