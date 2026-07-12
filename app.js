@@ -225,3 +225,29 @@ document.addEventListener('dragstart', e => e.preventDefault());
 document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && ['s', 'u'].includes(e.key.toLowerCase())) e.preventDefault();
 });
+
+const customerPet = document.querySelector('#customerPet');
+const customerPanel = document.querySelector('#customerPanel');
+const customerClose = document.querySelector('#customerClose');
+
+function setCustomerPanel(open) {
+  if (!customerPet || !customerPanel) return;
+  customerPet.setAttribute('aria-expanded', String(open));
+  customerPanel.classList.toggle('is-open', open);
+  customerPanel.setAttribute('aria-hidden', String(!open));
+}
+
+if (customerPet && customerPanel) {
+  customerPet.addEventListener('click', e => {
+    e.stopPropagation();
+    setCustomerPanel(!customerPanel.classList.contains('is-open'));
+  });
+  customerPanel.addEventListener('click', e => e.stopPropagation());
+  if (customerClose) {
+    customerClose.addEventListener('click', () => setCustomerPanel(false));
+  }
+  document.addEventListener('click', () => setCustomerPanel(false));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') setCustomerPanel(false);
+  });
+}
