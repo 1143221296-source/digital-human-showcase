@@ -20,7 +20,7 @@ function renderBackgrounds(targetId, numbers, tag, canPreview = false) {
     const src = mediaUrl(`assets/backgrounds/bg${n}.jpg`);
     return `
       <article class="asset-card ${canPreview ? 'is-clickable' : ''}">
-        <button class="background-thumb" type="button" ${canPreview ? `data-preview="${src}" data-title="背景${n}"` : 'disabled'}>
+        <button class="background-thumb" type="button" ${canPreview ? `data-preview="${src}" data-title="背景${n}" data-index="${numbers.indexOf(n)}"` : 'disabled'}>
           <img src="${src}" alt="背景${n}" loading="lazy" draggable="false">
         </button>
         <div class="asset-body"><b>背景${n}</b><span>${tag}</span></div>
@@ -156,15 +156,28 @@ if (more) more.onclick = () => { limit += 12; render(); };
 const imageDialog = document.querySelector('#imagePreview');
 const imagePreviewImg = document.querySelector('#imagePreviewImg');
 const imagePreviewTitle = document.querySelector('#imagePreviewTitle');
+let currentBackgroundIndex = -1;
+let wheelSwitchLocked = false;
+
+function openBackgroundPreviewByIndex(index) {
+  if (!imageDialog || !imagePreviewImg || !imagePreviewTitle || !standardBackgrounds.length) return;
+  const total = standardBackgrounds.length;
+  const nextIndex = ((index % total) + total) % total;
+  const number = standardBackgrounds[nextIndex];
+  const title = `背景${number}`;
+  currentBackgroundIndex = nextIndex;
+  imagePreviewImg.src = mediaUrl(`assets/backgrounds/bg${number}.jpg`);
+  imagePreviewImg.alt = title;
+  imagePreviewTitle.textContent = title;
+  if (!imageDialog.open) imageDialog.showModal();
+}
+
 document.addEventListener('click', e => {
   const thumb = e.target.closest('.background-thumb[data-preview]');
   if (!thumb || !imageDialog || !imagePreviewImg || !imagePreviewTitle) return;
-  imagePreviewImg.src = thumb.dataset.preview || '';
-  imagePreviewImg.alt = thumb.dataset.title || '标准背景预览';
-  imagePreviewTitle.textContent = thumb.dataset.title || '标准背景预览';
-  imageDialog.showModal();
+  const index = Number.parseInt(thumb.dataset.index || '0', 10);
+  openBackgroundPreviewByIndex(Number.isNaN(index) ? 0 : index);
 });
-
 document.querySelectorAll('[data-close-dialog]').forEach(btn => {
   btn.addEventListener('click', () => {
     const dialog = btn.closest('dialog');
@@ -173,14 +186,27 @@ document.querySelectorAll('[data-close-dialog]').forEach(btn => {
 });
 
 if (imageDialog) {
+  imageDialog.addEventListener('wheel', e => {
+    if (!imageDialog.open || currentBackgroundIndex < 0 || wheelSwitchLocked) return;
+    e.preventDefault();
+    wheelSwitchLocked = true;
+    openBackgroundPreviewByIndex(currentBackgroundIndex + (e.deltaY > 0 ? 1 : -1));
+    window.setTimeout(() => { wheelSwitchLocked = false; }, 220);
+  }, { passive: false });
   imageDialog.addEventListener('click', e => {
     if (e.target === imageDialog || e.target === imagePreviewImg) imageDialog.close();
   });
   imageDialog.addEventListener('close', () => {
     if (imagePreviewImg) imagePreviewImg.removeAttribute('src');
+    currentBackgroundIndex = -1;
   });
 }
 
+document.addEventListener('keydown', e => {
+  if (!imageDialog || !imageDialog.open || currentBackgroundIndex < 0) return;
+  if (e.key === 'ArrowRight') openBackgroundPreviewByIndex(currentBackgroundIndex + 1);
+  if (e.key === 'ArrowLeft') openBackgroundPreviewByIndex(currentBackgroundIndex - 1);
+});
 let activeAudio = null;
 let activeButton = null;
 document.addEventListener('click', e => {
@@ -251,3 +277,4 @@ if (customerPet && customerPanel) {
     if (e.key === 'Escape') setCustomerPanel(false);
   });
 }
+

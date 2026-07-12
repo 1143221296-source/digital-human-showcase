@@ -20,6 +20,7 @@
 .image-dialog-stage img{max-width:100%;max-height:78vh;object-fit:contain;user-select:none;-webkit-user-drag:none}
 .image-dialog-info{padding:0 24px 24px}
 .image-dialog-info h2{margin:8px 0 0;font-size:24px}
+.preview-help{margin:9px 0 0;color:#8d98b5;font-size:13px}
 @media(max-width:900px){.brand span{font-size:21px}.brand small{max-width:90vw}.image-dialog-stage{min-height:42vh}}
 
 /* 20260710-4: avatar hover video preview and click-to-close background preview */
