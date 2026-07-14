@@ -280,6 +280,7 @@ if (customerPet && customerPanel) {
 
 document.querySelectorAll('.case-preview-video').forEach(video => {
   video.addEventListener('mouseenter', () => {
+    video.muted = false;
     video.play().catch(() => {});
   });
   video.addEventListener('mouseleave', () => {
