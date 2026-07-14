@@ -278,3 +278,14 @@ if (customerPet && customerPanel) {
   });
 }
 
+document.querySelectorAll('.case-preview-video').forEach(video => {
+  video.addEventListener('mouseenter', () => {
+    video.play().catch(() => {});
+  });
+  video.addEventListener('mouseleave', () => {
+    video.pause();
+    video.currentTime = 0;
+  });
+  video.addEventListener('contextmenu', e => e.preventDefault());
+});
+

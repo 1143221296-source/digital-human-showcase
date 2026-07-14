@@ -58,4 +58,10 @@
 .case-video{background:#0e1527;border:1px solid #202b42;border-radius:14px;padding:18px;overflow:hidden}
 .case-video h3{margin:0 0 14px;font-size:24px;color:#eaf0ff}
 .case-video video{display:block;width:100%;aspect-ratio:16/9;border:1px solid #2c3854;border-radius:10px;background:#060b16;object-fit:contain}
-@media(max-width:900px){.case-videos{grid-template-columns:1fr}.case-video h3{font-size:20px}}
+.case-preview-video{cursor:pointer}
+.case-highlights{margin-top:18px;padding:18px;border:1px solid #2b3855;border-radius:10px;background:#0b1222}
+.case-highlights h4{margin:0 0 12px;font-size:18px;color:#ffcf5c}
+.case-highlights p{margin:0 0 12px;color:#a7b2ca;font-size:14px;line-height:1.8}
+.case-highlights p:last-child{margin-bottom:0}
+.case-highlights b{color:#eaf0ff}
+@media(max-width:900px){.case-videos{grid-template-columns:1fr}.case-video h3{font-size:20px}.case-highlights{padding:15px}.case-highlights p{font-size:13px}}
