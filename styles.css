@@ -52,3 +52,10 @@
 .customer-close{position:absolute;right:10px;top:9px;width:28px;height:28px;border:0;border-radius:50%;background:#24304b;color:#fff;font-size:20px;line-height:1}
 @keyframes customerFloat{0%,100%{translate:0 0}50%{translate:0 -7px}}
 @media(max-width:620px){.customer-widget{right:14px;bottom:88px}.customer-pet{width:82px;height:82px}.customer-tip{right:90px;max-width:150px;padding:9px 10px;font-size:12px}.customer-panel{width:calc(100vw - 28px)}}
+
+/* 20260714-1: workflow case videos */
+.case-videos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;margin-top:48px;text-align:left}
+.case-video{background:#0e1527;border:1px solid #202b42;border-radius:14px;padding:18px;overflow:hidden}
+.case-video h3{margin:0 0 14px;font-size:24px;color:#eaf0ff}
+.case-video video{display:block;width:100%;aspect-ratio:16/9;border:1px solid #2c3854;border-radius:10px;background:#060b16;object-fit:contain}
+@media(max-width:900px){.case-videos{grid-template-columns:1fr}.case-video h3{font-size:20px}}

@@ -47,14 +47,14 @@ function renderVoices() {
   `).join('');
 }
 
-const female = Array.from({ length: 42 }, (_, i) => i + 2).map(n => ({
+const female = Array.from({ length: 33 }, (_, i) => i + 2).map(n => ({
   n,
   gender: 'female',
   cartoon: n >= 35,
   poster: mediaUrl(`assets/posters/female${n}${n >= 35 ? '-cartoon' : ''}.jpg`),
   video: mediaUrl(`videos/female/female${n}${n >= 35 ? '-cartoon' : ''}.mp4`)
 }));
-const male = Array.from({ length: 35 }, (_, i) => i + 1).filter(n => ![5, 23].includes(n)).map(n => ({
+const male = Array.from({ length: 30 }, (_, i) => i + 1).filter(n => ![5, 23].includes(n)).map(n => ({
   n,
   gender: 'male',
   cartoon: n >= 31,
