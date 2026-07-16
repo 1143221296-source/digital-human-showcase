@@ -279,10 +279,15 @@ if (customerPet && customerPanel) {
 }
 
 document.querySelectorAll('.case-preview-video').forEach(video => {
-  video.addEventListener('mouseenter', () => {
+  const playWithSound = () => {
     video.muted = false;
-    video.play().catch(() => {});
-  });
+    video.volume = 1;
+    video.play().catch(() => {
+      video.dataset.soundBlocked = 'true';
+    });
+  };
+  video.addEventListener('pointerenter', playWithSound);
+  video.addEventListener('mouseenter', playWithSound);
   video.addEventListener('mouseleave', () => {
     video.pause();
     video.currentTime = 0;
