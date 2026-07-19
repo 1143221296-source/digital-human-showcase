@@ -54,7 +54,7 @@
 @media(max-width:620px){.customer-widget{right:14px;bottom:88px}.customer-pet{width:82px;height:82px}.customer-tip{right:90px;max-width:150px;padding:9px 10px;font-size:12px}.customer-panel{width:calc(100vw - 28px)}}
 
 /* 20260714-1: workflow case videos */
-.case-videos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;margin-top:48px;text-align:left}
+.case-videos{display:grid;grid-template-columns:minmax(0,760px);justify-content:start;gap:22px;margin-top:48px;text-align:left}
 .case-video{background:#0e1527;border:1px solid #202b42;border-radius:14px;padding:18px;overflow:hidden}
 .case-video h3{margin:0 0 14px;font-size:24px;color:#eaf0ff}
 .case-video video{display:block;width:100%;aspect-ratio:16/9;border:1px solid #2c3854;border-radius:10px;background:#060b16;object-fit:contain}
@@ -67,9 +67,10 @@
 @media(max-width:900px){.case-videos{grid-template-columns:1fr}.case-video h3{font-size:20px}.case-highlights{padding:15px}.case-highlights p{font-size:13px}}
 
 /* 20260714-4: advanced version banner and traditional case pain point */
-.version-banner{padding:70px max(6vw,24px);background:#0b1120;text-align:center;border-top:1px solid #1d2940;border-bottom:1px solid #1d2940}
+.version-banner{padding:70px max(6vw,24px);background:#0b1120;text-align:left;border-top:1px solid #1d2940;border-bottom:1px solid #1d2940}
 .version-banner h2{margin:12px 0 10px;font-size:40px;color:#eaf0ff}
-.version-banner p:last-child{margin:0 auto;color:#ffcf5c;font-size:22px;font-weight:800;line-height:1.6}
+.version-banner>p:last-of-type{margin:0 0 28px;color:#ffcf5c;font-size:22px;font-weight:800;line-height:1.6}
+.advanced-case-video{width:min(760px,100%);margin:0}
 .case-pain{margin-top:18px;padding:18px;border:1px solid #3d2e38;border-radius:10px;background:#1a1118}
 .case-pain h4{margin:0 0 10px;font-size:18px;color:#ffcf5c}
 .case-pain p{margin:0;color:#eaf0ff;font-size:18px;font-weight:800;line-height:1.7}
